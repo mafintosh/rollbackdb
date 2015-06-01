@@ -9,12 +9,12 @@ var path = require('path')
 var tick = 0
 var prev
 
-var create = function () {
+var create = function (opts) {
   var tmp = path.join(os.tmpdir(), 'rollbackdb-' + process.pid + '-' + ++tick)
   rimraf.sync(tmp)
   if (prev) rimraf.sync(prev)
   prev = tmp
-  return rollbackdb(levelup(tmp, {db: leveldown}))
+  return rollbackdb(levelup(tmp, {db: leveldown}), opts)
 }
 
 tape('put + get', function (t) {
@@ -106,6 +106,39 @@ tape('readstream override', function (t) {
     db.put('b', 'B', function () {
       var rs = db.createReadStream()
       var expected = ['a', 'B', 'c']
+
+      rs.on('data', function (data) {
+        t.same(expected.shift(), data.value.toString())
+      })
+
+      rs.on('end', function () {
+        t.same(expected.length, 0, 'no more data')
+        t.end()
+      })
+    })
+  })
+})
+
+tape('readstream override prefix', function (t) {
+  var db = create({prefix: 'test'})
+  db.batch([{
+    type: 'put',
+    key: 'a',
+    value: 'a'
+  }, {
+    type: 'put',
+    key: 'b',
+    value: 'b'
+  }, {
+    type: 'put',
+    key: 'c',
+    value: 'c'
+  }], function (err) {
+    t.error(err, 'no error')
+
+    db.put('b', 'B', function () {
+      var rs = db.createReadStream({gt: 'a'})
+      var expected = ['B', 'c']
 
       rs.on('data', function (data) {
         t.same(expected.shift(), data.value.toString())
