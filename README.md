@@ -6,6 +6,7 @@ A simple key/value database with fast rollback support.
 npm install rollbackdb
 ```
 
+[![build status](http://img.shields.io/travis/mafintosh/rollbackdb.svg?style=flat)](http://travis-ci.org/mafintosh/rollbackdb)
 ![dat](http://img.shields.io/badge/Development%20sponsored%20by-dat-green.svg?style=flat)
 
 ## Usage
