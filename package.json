@@ -1,6 +1,6 @@
 {
   "name": "rollbackdb",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A simple key/value database with fast rollback support.",
   "main": "index.js",
   "dependencies": {
