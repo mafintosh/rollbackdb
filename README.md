@@ -75,6 +75,23 @@ rdb.batch([{
 
 A property containing the total number of changes/versions added to this database
 
+#### `rs = rdb.createChangesStream([options])`
+
+Returns a readable stream of all changes added to this database.
+
+You can limit the range of changes returned by using the following options
+
+``` js
+{
+  gt: changeNumber,
+  gte: changeNumber,
+  lt: changeNumber,
+  lte: changeNumber
+}
+```
+
+If you only want a single change stream returned set `options.change = changeNumber`
+
 #### `rs = rdb.createReadStream([options])`
 
 Create a readable stream of all keys and values in the database.
